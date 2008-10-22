@@ -18,7 +18,11 @@ class PagesControllerTest < ActionController::TestCase
     should_respond_with :success
     should_render_template 'home'
 
-    should_eventually "have an OpenID login field"
+    should "have an OpenID login field" do
+      assert_select 'form[action=?][method=post]', session_path do
+        assert_select 'input[type=text][name=?]', 'openid_identity'
+      end
+    end
   end 
 
   should_eventually "handle this redirect" do
