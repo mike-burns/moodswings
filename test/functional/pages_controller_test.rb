@@ -12,6 +12,7 @@ class PagesControllerTest < ActionController::TestCase
     end 
   end 
 
+  logged_out do
   context 'A GET to #home' do
     setup { get :home }
 
@@ -24,14 +25,17 @@ class PagesControllerTest < ActionController::TestCase
       end
     end
   end 
+  end 
 
-  should_eventually "handle this redirect" do
     logged_in do
       context "GET to #home" do
         setup { get :home }
 
-        should_redirect_to 'user_path(@user)'
+        should_render_template 'home'
+
+        should "link to logout" do
+          assert_select 'a[href=?]', session_path, /logout/i
+        end
       end
-    end
   end
 end

@@ -1,7 +1,7 @@
 class Test::Unit::TestCase
   def self.logged_out(&block)
     context "Logged out" do
-      setup { session[:user_id] = nil }
+      setup { @request.session[:user_id] = nil }
       merge_block(&block)
     end
   end
@@ -10,7 +10,7 @@ class Test::Unit::TestCase
     context "Logged in" do
       setup do
         @user = Factory(:user)
-        session[:user_id] = @user.id
+        @request.session[:user_id] = @user.id
       end
 
       merge_block(&block)
