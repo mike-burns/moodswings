@@ -31,4 +31,10 @@ class Test::Unit::TestCase
       assert_equal @user.id, session[:user_id]
     end      
   end
+
+  def self.should_log_user_out
+    should "log the user out" do
+      assert_nil session[:user_id]
+    end
+  end
 end

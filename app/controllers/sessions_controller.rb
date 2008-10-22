@@ -7,14 +7,16 @@ class SessionsController < ApplicationController
         user = User.openid_registration(openid_identity, registration)
         if user.save
           session[:user_id] = user.id
-          redirect_to root_url
-        else
-          redirect_to root_url
         end
       else
         flash[:warning] = result.message
-        redirect_to root_url
       end
+      redirect_to root_url
     end
+  end
+
+  def destroy
+    reset_session
+    redirect_to root_url
   end
 end

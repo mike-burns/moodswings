@@ -40,21 +40,16 @@ class SessionsControllerTest < ActionController::TestCase
       should_eventually("do something") { should_redirect_to 'user_path(@user)' }
       should_authenticate_with_openid
       should_log_user_in
+      should_change 'User.count', :by => 1
 
-      should "create an account" do
-        assert_not_nil @user
+      should "set the openid_identity" do
+        assert_equal @openid_identity, @user.openid_identity
       end
 
-      should "set the name" do
-        assert_equal @registration['nickname'], @user.nickname
-      end
-
-      should "set the location" do
-        assert_equal @registration['postcode'], @user.location
-      end
-      
-      should "set the timezone" do
-        assert_equal @registration['timezone'], @user.timezone
+      {:nickname => 'nickname', :location => 'postcode', :timezone => 'timezone'}.each do |field,sreg|
+        should "set the #{field}" do
+          assert_equal @registration[sreg], @user.send(field)
+        end
       end
     end
 
@@ -94,10 +89,17 @@ class SessionsControllerTest < ActionController::TestCase
       should_set_the_flash_to 'no good'
       should_redirect_to 'root_url'
       should_authenticate_with_openid
-
-      should "not log the user in" do
-        assert_nil session[:user_id]
-      end
+      should_log_user_out
     end
+  end
+
+  context "DELETE to destroy" do
+    setup do
+      @request.session[:user_id] = 1
+      delete :destroy
+    end
+    
+    should_redirect_to 'root_url'
+    should_log_user_out
   end
 end
