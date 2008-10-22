@@ -5,15 +5,6 @@ class SessionsControllerTest < ActionController::TestCase
     @openid_identity = 'http://example.com/'
   end
 
-  def self.should_authenticate_with_openid
-    before_should "attempt to authenticate with openid" do
-      @controller.
-        expects(:authenticate_with_open_id).
-        with(nil, :optional => [:nickname, :postcode, :timezone]).
-        yields(@result, @openid_identity, @registration)
-    end
-  end
-
   context "when authenticating with openid would succeed" do
     setup do
       @result = stub('successful_result',:successful? => true)
@@ -48,6 +39,7 @@ class SessionsControllerTest < ActionController::TestCase
 
       should_eventually("do something") { should_redirect_to 'user_path(@user)' }
       should_authenticate_with_openid
+      should_log_user_in
 
       should "create an account" do
         assert_not_nil @user
@@ -64,10 +56,6 @@ class SessionsControllerTest < ActionController::TestCase
       should "set the timezone" do
         assert_equal @registration['timezone'], @user.timezone
       end
-
-      should "log the user in" do
-        assert_equal @user.id, session[:user_id]
-      end      
     end
 
     context "authenticating as a pre-existing user" do
@@ -79,10 +67,7 @@ class SessionsControllerTest < ActionController::TestCase
 
       should_eventually("do something") { should_redirect_to 'user_path(@user)' }
       should_authenticate_with_openid
-
-      should "log the user in" do
-        assert_equal @user.id, session[:user_id]
-      end
+      should_log_user_in
     end
   end
 

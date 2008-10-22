@@ -16,4 +16,19 @@ class Test::Unit::TestCase
       merge_block(&block)
     end
   end
+
+  def self.should_authenticate_with_openid
+    before_should "attempt to authenticate with openid" do
+      @controller.
+        expects(:authenticate_with_open_id).
+        with(nil, :optional => [:nickname, :postcode, :timezone]).
+        yields(@result, @openid_identity, @registration)
+    end
+  end
+
+  def self.should_log_user_in
+    should "log the user in" do
+      assert_equal @user.id, session[:user_id]
+    end      
+  end
 end
