@@ -9,7 +9,7 @@ class AccountsControllerTest < ActionController::TestCase
         end
 
         should_redirect_to 'root_url'
-        should_set_the_flash_to /sign/
+        should_set_the_flash_to /sign/i
       end
     end
   end
@@ -69,14 +69,31 @@ class AccountsControllerTest < ActionController::TestCase
       end
     end
 
-    context "PUT to update with valid params" do
+    context "PUT to update" do
+      context "with valid params" do
+        setup do
+          @valid_params = {:nickname => 'sarah', :timezone => 'Hawaii'}
+          put :update, :user => @valid_params
+          @user.reload
+        end
+
+        should_redirect_to 'edit_account_path'
+        should_set_the_flash_to /updated/i
+
+        should "update the fields as passed in" do
+          @valid_params.each do |field, value|
+            assert_equal value, @user.send(field)
+          end
+        end
+      end
+
       context "changing the OpenID" do
         should_eventually "re-evaluate"
       end
-    end
 
-    context "PUT to update with invalid params" do
-      should_eventually "error"
+      context "with invalid timezone" do
+        should_eventually "error"
+      end
     end
   end
 end

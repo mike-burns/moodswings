@@ -4,6 +4,12 @@ class AccountsController < ApplicationController
   def edit
   end
 
+  def update
+    current_user.update_attributes(params[:user])
+    flash[:notice] = 'We have updated your profile'
+    redirect_to edit_account_path
+  end
+
   private
 
   def ensure_logged_in
