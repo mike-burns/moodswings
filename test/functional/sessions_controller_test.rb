@@ -37,7 +37,7 @@ class SessionsControllerTest < ActionController::TestCase
         @user = User.find_by_openid_identity(@openid_identity)
       end
 
-      should_eventually("do something") { should_redirect_to 'user_path(@user)' }
+      should_redirect_to 'edit_account_path'
       should_authenticate_with_openid
       should_log_user_in
       should_change 'User.count', :by => 1
