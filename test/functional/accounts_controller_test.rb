@@ -92,7 +92,15 @@ class AccountsControllerTest < ActionController::TestCase
       end
 
       context "with invalid timezone" do
-        should_eventually "error"
+        setup do
+          @invalid_params = {:timezone => 'jkl'}
+          put :update, :user => @invalid_params
+          @user.reload
+        end
+
+        should_not_change 'User.find(@user)'
+        should_redirect_to 'edit_account_path'
+        should_set_the_flash_to /is not included in the list/
       end
     end
   end
