@@ -3,25 +3,62 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   context "stubbing out #generate_nickname" do
     setup do
+      User.any_instance.expects(:downcase_nickname)
       User.any_instance.expects(:generate_nickname)
     end
 
     should_require_attributes :openid_identity, :nickname
+
+    should_allow_values_for :openid_identity, 'http://example.com/'
+    should_allow_values_for :nickname, '0m.i~k!e-b@u=r:n,s_0'
+
+    should_not_allow_values_for :openid_identity, 'example.com'
+    should_not_allow_values_for :nickname, 'm e', 'm&e', 'm%e',
+      'm?e', 'm>e', 'm<e', 'm/e', 'm"e', 'm`e', 'm\e', 'm#e', 'm$e',
+      'm^e', 'm*e', 'm(e', 'm)e', 'm[e', 'm]e', 'm{e', 'm}e', 'm|e',
+      'm;e', 'm\'e', 'Me'
   end
 
-  should_allow_values_for :openid_identity, 'http://example.com/'
-  should_allow_values_for :nickname, '0mike-burns_0'
+  context "on save" do
+    should "set the default nickname to a gsub of the OpenID" do
+      user = Factory.build(:user,
+                           :nickname => nil,
+                           :openid_identity => 'http://example.com/')
+      user.save!
+      dashed = user.openid_identity.gsub(/\W/,'-')
+      assert_equal dashed, user.nickname
+    end
 
-  should_not_allow_values_for :openid_identity, 'example.com'
-  should_not_allow_values_for :nickname, 'm e', 'm&e', 'm%e'
+    should "lowercase the nickname" do
+      nickname = 'Joe'
+      user = Factory.build(:user,
+                           :nickname => nickname,
+                           :openid_identity => 'http://example.com/')
+      user.save!
+      assert_equal nickname.downcase, user.nickname
+    end
 
-  should "set the default nickname to a gsub of the OpenID" do
-    user = Factory.build(:user,
-                         :nickname => nil,
-                         :openid_identity => 'http://example.com/')
-    user.save!
-    dashed = user.openid_identity.gsub(/\W/,'-')
-    assert_equal dashed, user.nickname
+    [:openid_identity, :nickname].each do |field|
+      should "only give one error for blank #{field}" do
+        user = Factory.build(:user, field => '')
+        user.expects(:downcase_nickname)
+        user.expects(:generate_nickname)
+        user.valid?
+        assert_kind_of String, user.errors[field]
+      end
+    end
+  end
+
+  context "on update" do
+    setup do
+      @user = Factory(:user)
+    end
+
+    should "lowercase the nickname" do
+      nickname = 'Joe'
+      @user.update_attributes!(:nickname => nickname)
+      assert_equal nickname.downcase, @user.reload.nickname
+    end
   end
 
   context "sent .openid_registration" do
@@ -74,7 +111,7 @@ class UserTest < ActiveSupport::TestCase
           end
 
           should "have the specified nickname" do
-            assert_equal @registration['nickname'], @result.nickname
+            assert_match %r{^#{@registration['nickname']}$}i, @result.nickname
           end
 
           should "have the specified timezone" do

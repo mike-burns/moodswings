@@ -9,7 +9,7 @@ class SessionsControllerTest < ActionController::TestCase
     setup do
       @result = stub('successful_result',:successful? => true)
       @registration = {
-        'nickname' => 'Francis',
+        'nickname' => 'francis',
         'postcode' => '60647',
         'timezone' => 'America/Los_Angeles'
       }
@@ -72,7 +72,7 @@ class SessionsControllerTest < ActionController::TestCase
       @result = stub('successful_result', :successful? => false,
                                           :message     => @message)
       @registration = {
-        'nickname' => 'Francis',
+        'nickname' => 'francis',
         'postcode' => '60647',
         'timezone' => 'America/Los_Angeles'
       }
