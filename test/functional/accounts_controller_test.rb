@@ -1,6 +1,19 @@
 require 'test_helper'
 
 class AccountsControllerTest < ActionController::TestCase
+  logged_out do
+    {:edit => [:get, {}], :update => [:put, {:user =>{}}]}.each do |action, (meth, args)|
+      context "#{meth.to_s.upcase} to #{action}" do
+        setup do
+          send(meth, action, args)
+        end
+
+        should_redirect_to 'root_url'
+        should_set_the_flash_to /sign/
+      end
+    end
+  end
+
   logged_in do
     context "a User with a timezone" do
       setup do
@@ -54,6 +67,16 @@ class AccountsControllerTest < ActionController::TestCase
           assert_select 'input[type=submit]'
         end
       end
+    end
+
+    context "PUT to update with valid params" do
+      context "changing the OpenID" do
+        should_eventually "re-evaluate"
+      end
+    end
+
+    context "PUT to update with invalid params" do
+      should_eventually "error"
     end
   end
 end
