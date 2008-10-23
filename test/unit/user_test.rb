@@ -9,31 +9,40 @@ class UserTest < ActiveSupport::TestCase
 
     should_require_attributes :openid_identity, :nickname
 
-    should_allow_values_for :openid_identity, 'http://example.com/'
+    should_allow_values_for :openid_identity, 'http://me.example.com/'
     should_allow_values_for :nickname, '0m.i~k!e-b@u=r:n,s_0'
+    should_allow_values_for :timezone, 'Central Time (US & Canada)',
+      'Hawaii', 'Brasilia'
 
     should_not_allow_values_for :openid_identity, 'example.com'
     should_not_allow_values_for :nickname, 'm e', 'm&e', 'm%e',
       'm?e', 'm>e', 'm<e', 'm/e', 'm"e', 'm`e', 'm\e', 'm#e', 'm$e',
       'm^e', 'm*e', 'm(e', 'm)e', 'm[e', 'm]e', 'm{e', 'm}e', 'm|e',
       'm;e', 'm\'e', 'Me'
+    should_not_allow_values_for :timezone, 'jklasd',
+      :message => /is not included in the list/
   end
+
+  context "a User" do
+    setup do
+      @user = Factory(:user)
+    end
+
+    should_require_unique_attributes :openid_identity, :nickname
+  end
+
 
   context "on save" do
     should "set the default nickname to a gsub of the OpenID" do
-      user = Factory.build(:user,
-                           :nickname => nil,
-                           :openid_identity => 'http://example.com/')
+      user = Factory.build(:user, :nickname => nil)
       user.save!
       dashed = user.openid_identity.gsub(/\W/,'-')
       assert_equal dashed, user.nickname
     end
 
     should "lowercase the nickname" do
-      nickname = 'Joe'
-      user = Factory.build(:user,
-                           :nickname => nickname,
-                           :openid_identity => 'http://example.com/')
+      nickname = Factory.next(:nickname).upcase
+      user = Factory.build(:user, :nickname => nickname)
       user.save!
       assert_equal nickname.downcase, user.nickname
     end
@@ -55,7 +64,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should "lowercase the nickname" do
-      nickname = 'Joe'
+      nickname = Factory.next(:nickname).upcase
       @user.update_attributes!(:nickname => nickname)
       assert_equal nickname.downcase, @user.reload.nickname
     end
@@ -63,7 +72,7 @@ class UserTest < ActiveSupport::TestCase
 
   context "sent .openid_registration" do
     setup do
-      @openid_identity = 'http://example.com/'
+      @openid_identity = Factory.next(:openid_identity)
     end
 
     context "for an existing user" do
@@ -92,8 +101,8 @@ class UserTest < ActiveSupport::TestCase
       context "with a nickname" do
         setup do
           @registration = {
-            'nickname' => 'Joe',
-            'timezone' => 'America/Los_Angeles',
+            'nickname' => Factory.next(:nickname),
+            'timezone' => 'Hawaii',
             'postcode' => '02108'
           }
           @result = User.openid_registration(@openid_identity, @registration)

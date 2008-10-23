@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class SessionsControllerTest < ActionController::TestCase
   def setup
-    @openid_identity = 'http://example.com/'
+    @openid_identity = Factory.next(:openid_identity)
   end
 
   context "when authenticating with openid would succeed" do
@@ -11,7 +11,7 @@ class SessionsControllerTest < ActionController::TestCase
       @registration = {
         'nickname' => 'francis',
         'postcode' => '60647',
-        'timezone' => 'America/Los_Angeles'
+        'timezone' => 'Hawaii'
       }
       @controller.
         stubs(:authenticate_with_open_id).
@@ -74,7 +74,7 @@ class SessionsControllerTest < ActionController::TestCase
       @registration = {
         'nickname' => 'francis',
         'postcode' => '60647',
-        'timezone' => 'America/Los_Angeles'
+        'timezone' => 'Hawaii'
       }
       @controller.
         stubs(:authenticate_with_open_id).
