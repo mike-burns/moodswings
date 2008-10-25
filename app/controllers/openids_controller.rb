@@ -21,7 +21,7 @@ class OpenidsController < ApplicationController
       session[:user_id] = nil
       redirect_to show_openid_path
     else
-      flash[:warning] = 'invalid OpenID format'
+      flash[:warning] = current_user.errors.full_messages.join(', ')
       redirect_to edit_account_path
     end
   end

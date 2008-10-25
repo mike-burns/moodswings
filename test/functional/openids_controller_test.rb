@@ -132,6 +132,8 @@ class OpenidsControllerTest < ActionController::TestCase
         setup do
           @invalid_params = {'new_openid_identity' => 'foo'}
           @user.expects(:update_attributes).with(@invalid_params).returns(false)
+          errors = mock('errors', :full_messages => ['invalid OpenID'])
+          @user.expects(:errors).returns(errors)
           put :update, :user => @invalid_params
         end
 
