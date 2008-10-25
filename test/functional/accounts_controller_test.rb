@@ -59,11 +59,20 @@ class AccountsControllerTest < ActionController::TestCase
       should "have a form for their user info" do
         assert_select 'form[action=?][method=post]', account_path do
           assert_select 'input[type=hidden][name=_method][value=put]'
-          [:nickname, :openid_identity, :location].each do |field|
-            assert_labeled_select 'input[type=text][name=?]',
-                                  "user[#{field}]"
-          end
+          assert_labeled_select 'input[type=text][name=?]',
+                                "user[nickname]"
+          assert_labeled_select 'input[type=text][name=?]',
+                                "user[location]"
           assert_labeled_select 'select[name=?]', 'user[timezone]'
+          assert_select 'input[type=submit]'
+        end
+      end
+
+      should "have a form for their OpenID info" do
+        assert_select 'form[action=?][method=post]', openid_path do
+          assert_select 'input[type=hidden][name=_method][value=put]'
+          assert_labeled_select 'input[type=text][name=?]',
+                                'user[new_openid_identity]'
           assert_select 'input[type=submit]'
         end
       end

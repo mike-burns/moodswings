@@ -1,7 +1,11 @@
 <% form_for current_user, :url => account_path do |f| %>
-  <% [:nickname, :location, :openid_identity].each do |field| %>
-    <p><%= f.label field %> <%= f.text_field field %></p>
-  <% end %>
+  <p><%= f.label :nickname %> <%= f.text_field :nickname %></p>
+  <p><%= f.label :location %> <%= f.text_field :location %></p>
   <p><%= f.label :timezone %> <%= f.time_zone_select :timezone %></p>
+  <p><%= f.submit %></p>
+<% end %>
+
+<% form_for current_user, :url => openid_path do |f| %>
+  <p><%= f.label :new_openid_identity %> <%= f.text_field :new_openid_identity %></p>
   <p><%= f.submit %></p>
 <% end %>

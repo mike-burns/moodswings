@@ -18,7 +18,6 @@ class OpenidsController < ApplicationController
 
   def update
     if current_user.update_attributes(params[:user])
-      session[:user_id] = nil
       redirect_to show_openid_path
     else
       flash[:warning] = current_user.errors.full_messages.join(', ')
