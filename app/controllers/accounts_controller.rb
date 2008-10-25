@@ -12,13 +12,4 @@ class AccountsController < ApplicationController
     end
     redirect_to edit_account_path
   end
-
-  private
-
-  def ensure_logged_in
-    unless logged_in?
-      flash[:warning] = 'Must be signed in'
-      redirect_to root_url
-    end
-  end
 end

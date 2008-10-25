@@ -11,6 +11,7 @@ class Test::Unit::TestCase
       setup do
         @user = Factory(:user)
         @request.session[:user_id] = @user.id
+        @controller.stubs(:current_user).returns(@user)
       end
 
       merge_block(&block)

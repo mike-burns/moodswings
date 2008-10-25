@@ -60,8 +60,8 @@ class AccountsControllerTest < ActionController::TestCase
         assert_select 'form[action=?][method=post]', account_path do
           assert_select 'input[type=hidden][name=_method][value=put]'
           [:nickname, :openid_identity, :location].each do |field|
-            assert_select 'label[for=?]', "user_#{field}"
-            assert_select 'input[type=text][name=?]', "user[#{field}]"
+            assert_labeled_select 'input[type=text][name=?]',
+                                  "user[#{field}]"
           end
           assert_labeled_select 'select[name=?]', 'user[timezone]'
           assert_select 'input[type=submit]'
