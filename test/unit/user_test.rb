@@ -19,8 +19,8 @@ class UserTest < ActiveSupport::TestCase
       'm?e', 'm>e', 'm<e', 'm/e', 'm"e', 'm`e', 'm\e', 'm#e', 'm$e',
       'm^e', 'm*e', 'm(e', 'm)e', 'm[e', 'm]e', 'm{e', 'm}e', 'm|e',
       'm;e', 'm\'e', 'Me'
-    should_not_allow_values_for :timezone, 'jklasd',
-      :message => /is not included in the list/
+    #should_not_allow_values_for :timezone, 'jklasd',
+    #  :message => /is not included in the list/
   end
 
   context "a User" do

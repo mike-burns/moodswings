@@ -47,9 +47,6 @@ class UsersControllerTest < ActionController::TestCase
           end
         end
 
-        should "the above might be an issue, because it doesn't stick
-                the x,y into the moods param"
-
         should "let you delete each mood" do
           @the_user.moods.first(10).each do |mood|
             assert_match %r{#{mood_path(mood)}}, @response.body

@@ -4,7 +4,7 @@ class MoodsControllerTest < ActionController::TestCase
   should_route :post, '/moods', :action => :create
   should_route :delete, '/moods/2', :action => :destroy, :id => 2
 
-  should_ensure_logged_in :post, :create, :mood => {:name => 'thrilled'}
+  should_ensure_logged_in :post, :create, :x => 10, :y => 10
   should_ensure_logged_in :delete, :destroy, :id => 2
 
   logged_in do
@@ -12,7 +12,7 @@ class MoodsControllerTest < ActionController::TestCase
       context "successfully" do
         setup do
           @valid_params = {:x => 10, :y => 10}
-          post :create, :mood => @valid_params
+          post :create, @valid_params
           @mood = Mood.last
         end
 
@@ -27,7 +27,7 @@ class MoodsControllerTest < ActionController::TestCase
       context "failed" do
         setup do
           @invalid_params = {}
-          post :create, :mood => @invalid_params
+          post :create, @invalid_params
         end
 
         should_not_change 'Mood.count'

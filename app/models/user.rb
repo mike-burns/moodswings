@@ -5,8 +5,8 @@ class User < ActiveRecord::Base
                          :with => /.+:.+/
   validates_format_of    :nickname,        :allow_blank => true,
                          :with => /\A[a-z0-9_\-~!@_+=:,\.]+\Z/
-  validates_inclusion_of :timezone, :in => ActiveSupport::TimeZone.all.map(&:name),
-                         :allow_nil => true, :allow_blank => true
+  #validates_inclusion_of :timezone, :in => ActiveSupport::TimeZone.all.map(&:name),
+  #                       :allow_nil => true, :allow_blank => true
   validates_uniqueness_of :openid_identity
   validates_uniqueness_of :nickname
 
