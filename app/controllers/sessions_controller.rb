@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
     authenticate_with_open_id(params[:openid_identity], :optional => [:nickname,:postcode,:timezone]) do |result, openid_identity, registration|
       if result.successful?
         user = User.openid_registration(openid_identity, registration)
-        redir_url = user.new_record? ? edit_account_path : root_url
+        redir_url = user.new_record? ? edit_account_path : user_path(user)
         if user.save
           session[:user_id] = user.id
           redirect_to redir_url

@@ -17,9 +17,7 @@ class MoodsControllerTest < ActionController::TestCase
         end
 
         should_change 'Mood.count', :by => 1
-        should_eventually "..." do
-          should_redirect_to 'user_path(@user)'
-        end
+        should_redirect_to 'user_path(@user)'
 
         should "set the mood's user to the current user" do
           assert_equal @user, @mood.user
@@ -33,9 +31,7 @@ class MoodsControllerTest < ActionController::TestCase
         end
 
         should_not_change 'Mood.count'
-        should_eventually "..." do
-          should_redirect_to 'user_path(@user)'
-        end
+        should_redirect_to 'user_path(@user)'
       end
     end
 
@@ -50,9 +46,7 @@ class MoodsControllerTest < ActionController::TestCase
         end
 
         should_change 'Mood.count', :by => -1
-        should_eventually "..." do
-          should_redirect_to 'user_path(@user)'
-        end
+        should_redirect_to 'user_path(@user)'
       end
     end
 
