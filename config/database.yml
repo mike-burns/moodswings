@@ -3,18 +3,18 @@
 development:
   adapter: postgresql
   database: <%= PROJECT_NAME %>_development
-  username: root
-  password: 
-  host: localhost
-  encoding: utf8
+  #username: mike
+  #password: 
+  #host: localhost
+  #encoding: utf8
   
 test:
   adapter: postgresql
   database: <%= PROJECT_NAME %>_test
-  username: root
-  password: 
-  host: localhost
-  encoding: utf8
+  #username: mike
+  #password: 
+  #host: localhost
+  #encoding: utf8
   
 staging:
   adapter: postgresql

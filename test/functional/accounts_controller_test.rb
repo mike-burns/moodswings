@@ -1,18 +1,8 @@
 require 'test_helper'
 
 class AccountsControllerTest < ActionController::TestCase
-  logged_out do
-    {:edit => [:get, {}], :update => [:put, {:user =>{}}]}.each do |action, (meth, args)|
-      context "#{meth.to_s.upcase} to #{action}" do
-        setup do
-          send(meth, action, args)
-        end
-
-        should_redirect_to 'root_url'
-        should_set_the_flash_to /sign/i
-      end
-    end
-  end
+  should_ensure_logged_in(:get, :edit)
+  should_ensure_logged_in(:put, :update, :user => {})
 
   logged_in do
     context "a User with a timezone" do

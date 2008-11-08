@@ -4,4 +4,5 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :account
   map.openid '/openid', :controller => 'openids', :action => 'update', :conditions => {:method => :put}
   map.show_openid '/openid', :controller => 'openids', :action => 'show', :conditions => {:method => :get}
+  map.resources :users, :has_many => [:moods]
 end

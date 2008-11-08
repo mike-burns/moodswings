@@ -8,25 +8,8 @@ class OpenidsControllerTest < ActionController::TestCase
   should_route :get, '/openid', :controller => 'openids', :action => 'show'
   should_route :put, '/openid', :controller => 'openids', :action => 'update'
 
-  logged_out do
-    context "GET to show" do
-      setup do
-        get :show
-      end
-
-      should_redirect_to 'root_url'
-      should_set_the_flash_to /sign/i
-    end
-
-    context "PUT to update" do
-      setup do
-        put :update, :user => {:openid_identity => @openid_identity}
-      end
-
-      should_redirect_to 'root_url'
-      should_set_the_flash_to /sign/i
-    end
-  end
+  should_ensure_logged_in(:get, :show)
+  should_ensure_logged_in(:put, :update, :user => {:openid_identity => @openid_identity})
 
   logged_in do
     context "a User with new_openid_identity set" do

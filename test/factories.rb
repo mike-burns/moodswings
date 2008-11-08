@@ -5,3 +5,8 @@ Factory.define :user do |u|
   u.openid_identity { Factory.next(:openid_identity) }
   u.nickname        { Factory.next(:nickname) }
 end
+
+Factory.define :mood do |m|
+  m.name 'bittersweet'
+  m.association :user
+end

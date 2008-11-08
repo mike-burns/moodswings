@@ -13,7 +13,17 @@ Rails::Initializer.run do |config|
              :version => '~> 2.3.5'
 
   config.gem "ruby-openid", :lib => 'openid'
-  
+
+  config.gem 'thoughtbot-shoulda', 
+    :lib => 'shoulda',
+    :source => 'http://gems.github.com',
+    :version => '>= 2.0.5'
+  config.gem 'thoughtbot-factory_girl', 
+    :lib => 'factory_girl', 
+    :source => 'http://gems.github.com',
+    :version => '>= 1.1.3'
+  config.gem 'redgreen'
+
   # Add the vendor/gems/*/lib directories to the LOAD_PATH
   config.load_paths += Dir.glob(File.join(RAILS_ROOT, 'vendor', 'gems', '*', 'lib'))
 

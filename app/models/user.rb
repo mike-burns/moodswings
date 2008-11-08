@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
   before_validation_on_create :generate_nickname, :downcase_nickname
   before_validation_on_update :downcase_nickname
 
+  has_many :moods
+
   def self.openid_registration(openid_identity, registration)
     find_by_openid_identity(openid_identity) ||
       new(:openid_identity => openid_identity,

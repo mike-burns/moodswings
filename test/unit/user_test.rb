@@ -29,6 +29,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should_require_unique_attributes :openid_identity, :nickname
+    should_have_many :moods
   end
 
 
