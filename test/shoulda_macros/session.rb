@@ -8,14 +8,16 @@ class Test::Unit::TestCase
 
   def self.logged_in(&block)
     context "Logged in" do
-      setup do
-        @user = Factory(:user)
-        @request.session[:user_id] = @user.id
-        @controller.stubs(:current_user).returns(@user)
-      end
+      setup { login_as(Factory(:user)) }
 
       merge_block(&block)
     end
+  end
+
+  def login_as(user)
+    @user = user
+    @request.session[:user_id] = @user.id
+    @controller.stubs(:current_user).returns(@user)
   end
 
   def self.should_authenticate_with_openid

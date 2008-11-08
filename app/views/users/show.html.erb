@@ -1,0 +1,15 @@
+<% if logged_in? %>
+  <% form_for @user.moods.build do |f| %>
+    <p><%= image_submit_tag 'colorwheel.jpg' %></p>
+  <% end %>
+<% end %>
+
+<ol>
+  <% @moods.each do |mood| %>
+    <li><%= mood.name %>
+    <% if current_user == @user %>
+      <%= link_to 'Delete', mood, :method => :delete %>
+    <% end %>
+    </li>
+  <% end %>
+</ol>
