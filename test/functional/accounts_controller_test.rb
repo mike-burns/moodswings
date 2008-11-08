@@ -86,10 +86,6 @@ class AccountsControllerTest < ActionController::TestCase
         end
       end
 
-      context "changing the OpenID" do
-        should_eventually "re-evaluate"
-      end
-
       context "with invalid timezone" do
         setup do
           @invalid_params = {:timezone => 'jkl'}

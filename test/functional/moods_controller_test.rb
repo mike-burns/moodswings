@@ -1,20 +1,18 @@
 require 'test_helper'
 
 class MoodsControllerTest < ActionController::TestCase
-  should_route :post, '/users/1/moods', :action => :create, :user_id => 1
-  should_route :delete, '/users/1/moods/2', :action => :destroy,
-               :user_id => 1, :id => 2
+  should_route :post, '/moods', :action => :create
+  should_route :delete, '/moods/2', :action => :destroy, :id => 2
 
-  should_ensure_logged_in :post, :create, :user_id => 1,
-                          :mood => {:name => 'thrilled'}
-  should_ensure_logged_in :delete, :destroy, :user_id => 1, :id => 2
+  should_ensure_logged_in :post, :create, :mood => {:name => 'thrilled'}
+  should_ensure_logged_in :delete, :destroy, :id => 2
 
   logged_in do
     context "POST to create" do
       context "successfully" do
         setup do
           @valid_params = {:x => 10, :y => 10}
-          post :create, :user_id => @user.to_param, :mood => @valid_params
+          post :create, :mood => @valid_params
           @mood = Mood.last
         end
 
@@ -31,7 +29,7 @@ class MoodsControllerTest < ActionController::TestCase
       context "failed" do
         setup do
           @invalid_params = {}
-          post :create, :user_id => @user.to_param, :mood => @invalid_params
+          post :create, :mood => @invalid_params
         end
 
         should_not_change 'Mood.count'
@@ -48,7 +46,7 @@ class MoodsControllerTest < ActionController::TestCase
 
       context "DELETE to destroy" do
         setup do
-          delete :destroy, :user_id => @user.to_param, :id => @mood.to_param
+          delete :destroy, :id => @mood.to_param
         end
 
         should_change 'Mood.count', :by => -1
@@ -66,7 +64,7 @@ class MoodsControllerTest < ActionController::TestCase
       context "DELETE to destroy" do
         setup do
           assert_raise(ActiveRecord::RecordNotFound) do
-            delete :destroy, :user_id => @user.to_param, :id => @mood.to_param
+            delete :destroy, :id => @mood.to_param
           end
         end
 

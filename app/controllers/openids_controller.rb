@@ -18,7 +18,7 @@ class OpenidsController < ApplicationController
 
   def update
     if current_user.update_attributes(params[:user])
-      redirect_to show_openid_path
+      redirect_to openid_path
     else
       flash[:warning] = current_user.errors.full_messages.join(', ')
       redirect_to edit_account_path

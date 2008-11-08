@@ -104,7 +104,7 @@ class OpenidsControllerTest < ActionController::TestCase
         end
 
         should_not_change '@user.openid_identity'
-        should_redirect_to 'show_openid_path'
+        should_redirect_to 'openid_path'
 
         should "set the new_openid_identity" do
           assert_equal @openid_identity, @user.new_openid_identity
