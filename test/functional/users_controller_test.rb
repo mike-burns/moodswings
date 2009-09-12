@@ -4,8 +4,8 @@ class UsersControllerTest < ActionController::TestCase
   context "a User with Moods" do
     setup do
       @the_user = Factory(:user)
-      Factory(:mood, :name => 'horny', :user => @the_user)
-      Factory(:mood, :name => 'depressed', :user => @the_user)
+      Factory(:mood, :red => 100, :user => @the_user)
+      Factory(:mood, :red => 150, :user => @the_user)
     end
 
     logged_out do
@@ -19,7 +19,7 @@ class UsersControllerTest < ActionController::TestCase
 
         should "show some moods" do
           @the_user.moods.first(10).each do |mood|
-            assert_select 'li', /#{mood.name}/
+            assert_select 'li', /#{mood.red}/
           end
         end
 

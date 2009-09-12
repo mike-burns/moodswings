@@ -7,6 +7,8 @@ Factory.define :user do |u|
 end
 
 Factory.define :mood do |m|
-  m.name 'bittersweet'
+  m.red 200
+  m.green 200
+  m.blue 200
   m.association :user
 end

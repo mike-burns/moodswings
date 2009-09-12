@@ -6,7 +6,7 @@
 
 <ol>
   <% @moods.each do |mood| %>
-    <li><%= mood.name %>
+    <li><%= mood.red %>, <%= mood.green %>, <%= mood.blue %>
     <% if current_user == @user %>
       <%= link_to 'Delete', mood, :method => :delete %>
     <% end %>

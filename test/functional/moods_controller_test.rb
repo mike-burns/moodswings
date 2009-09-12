@@ -4,14 +4,15 @@ class MoodsControllerTest < ActionController::TestCase
   should_route :post, '/moods', :action => :create
   should_route :delete, '/moods/2', :action => :destroy, :id => 2
 
-  should_ensure_logged_in :post, :create, :x => 10, :y => 10
+  should_ensure_logged_in :post, :create,
+    :red => 100, :green => 150, :blue => 175
   should_ensure_logged_in :delete, :destroy, :id => 2
 
   logged_in do
     context "POST to create" do
       context "successfully" do
         setup do
-          @valid_params = {:x => 10, :y => 10}
+          @valid_params = {:red => 100, :green => 150, :blue => 175}
           post :create, @valid_params
           @mood = Mood.last
         end
