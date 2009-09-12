@@ -12,3 +12,8 @@ Factory.define :mood do |m|
   m.blue 200
   m.association :user
 end
+
+Factory.define :subscription do |f|
+  f.association :user
+  f.association :subscriber, :factory => :user
+end

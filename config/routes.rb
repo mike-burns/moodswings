@@ -3,6 +3,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :session
   map.resource :account
   map.resource :openid
-  map.resources :users
+  map.resources :users do |user|
+    user.resource :subscription, :only => [:destroy,:create]
+  end
   map.resources :moods
 end
