@@ -13,7 +13,7 @@ class MoodsControllerTest < ActionController::TestCase
       context "successfully" do
         setup do
           @valid_params = {:red => 100, :green => 150, :blue => 175}
-          post :create, @valid_params
+          post :create, :mood => @valid_params
           @mood = Mood.last
         end
 
@@ -28,7 +28,7 @@ class MoodsControllerTest < ActionController::TestCase
       context "failed" do
         setup do
           @invalid_params = {}
-          post :create, @invalid_params
+          post :create, :mood => @invalid_params
         end
 
         should_not_change 'Mood.count'

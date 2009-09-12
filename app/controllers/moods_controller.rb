@@ -2,9 +2,7 @@ class MoodsController < ApplicationController
   before_filter :ensure_logged_in
 
   def create
-    mood = current_user.moods.build(:red => params[:red],
-                                    :blue => params[:blue],
-                                    :green => params[:green])
+    mood = current_user.moods.build(params[:mood])
     mood.save
     redirect_to user_path(current_user)
   end
