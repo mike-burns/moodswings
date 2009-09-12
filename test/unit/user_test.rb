@@ -7,7 +7,7 @@ class UserTest < ActiveSupport::TestCase
       User.any_instance.expects(:generate_nickname)
     end
 
-    should_require_attributes :openid_identity, :nickname
+    should_validate_presence_of :openid_identity, :nickname
 
     should_allow_values_for :openid_identity, 'http://me.example.com/'
     should_allow_values_for :nickname, '0m.i~k!e-b@u=r:n,s_0'
@@ -29,7 +29,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should_have_db_column :new_openid_identity, :type => 'string'
-    should_require_unique_attributes :openid_identity, :nickname
+    should_validate_uniqueness_of :openid_identity, :nickname
     should_have_many :moods
   end
 

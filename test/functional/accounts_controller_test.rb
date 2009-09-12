@@ -76,7 +76,7 @@ class AccountsControllerTest < ActionController::TestCase
           @user.reload
         end
 
-        should_redirect_to 'edit_account_path'
+        should_redirect_to("the account edit path") { edit_account_path }
         should_set_the_flash_to /updated/i
 
         should "update the fields as passed in" do

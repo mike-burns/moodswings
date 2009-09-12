@@ -195,7 +195,7 @@ class DateExtCalculationsTest < Test::Unit::TestCase
   end
 
   def test_end_of_day
-    assert_equal Time.local(2005,2,21,23,59,59), Date.new(2005,2,21).end_of_day
+    assert_equal Time.local(2005,2,21,23,59,59,999999.999), Date.new(2005,2,21).end_of_day
   end
 
   def test_xmlschema
@@ -210,27 +210,50 @@ class DateExtCalculationsTest < Test::Unit::TestCase
     end
   end
 
-  uses_mocha 'TestDateCurrent' do
-    def test_current_returns_date_today_when_zone_default_not_set
-      with_env_tz 'US/Central' do
-        Time.stubs(:now).returns Time.local(1999, 12, 31, 23)
-        assert_equal Date.new(1999, 12, 31), Date.today
-        assert_equal Date.new(1999, 12, 31), Date.current
-      end
-    end
+  def test_today
+    Date.stubs(:current).returns(Date.new(2000, 1, 1))
+    assert_equal false, Date.new(1999, 12, 31).today?
+    assert_equal true, Date.new(2000,1,1).today?
+    assert_equal false, Date.new(2000,1,2).today?
+  end
 
-    def test_current_returns_time_zone_today_when_zone_default_set
-      silence_warnings do # silence warnings raised by tzinfo gem
-        Time.zone_default = ActiveSupport::TimeZone['Eastern Time (US & Canada)']
-        with_env_tz 'US/Central' do
-          Time.stubs(:now).returns Time.local(1999, 12, 31, 23)
-          assert_equal Date.new(1999, 12, 31), Date.today
-          assert_equal Date.new(2000, 1, 1), Date.current
-        end
-      end
-    ensure
-      Time.zone_default = nil
+  def test_past
+    Date.stubs(:current).returns(Date.new(2000, 1, 1))
+    assert_equal true, Date.new(1999, 12, 31).past?
+    assert_equal false, Date.new(2000,1,1).past?
+    assert_equal false, Date.new(2000,1,2).past?
+  end
+
+  def test_future
+    Date.stubs(:current).returns(Date.new(2000, 1, 1))
+    assert_equal false, Date.new(1999, 12, 31).future?
+    assert_equal false, Date.new(2000,1,1).future?
+    assert_equal true, Date.new(2000,1,2).future?
+  end
+
+  def test_current_returns_date_today_when_zone_default_not_set
+    with_env_tz 'US/Central' do
+      Time.stubs(:now).returns Time.local(1999, 12, 31, 23)
+      assert_equal Date.new(1999, 12, 31), Date.today
+      assert_equal Date.new(1999, 12, 31), Date.current
     end
+  end
+
+  def test_current_returns_time_zone_today_when_zone_default_set
+    Time.zone_default = ActiveSupport::TimeZone['Eastern Time (US & Canada)']
+    with_env_tz 'US/Central' do
+      Time.stubs(:now).returns Time.local(1999, 12, 31, 23)
+      assert_equal Date.new(1999, 12, 31), Date.today
+      assert_equal Date.new(2000, 1, 1), Date.current
+    end
+  ensure
+    Time.zone_default = nil
+  end
+
+  def test_date_advance_should_not_change_passed_options_hash
+    options = { :years => 3, :months => 11, :days => 2 }
+    Date.new(2005,2,28).advance(options)
+    assert_equal({ :years => 3, :months => 11, :days => 2 }, options)
   end
 
   protected

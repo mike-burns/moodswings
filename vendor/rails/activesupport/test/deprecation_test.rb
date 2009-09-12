@@ -25,6 +25,9 @@ class Deprecatee
   def e; end
   deprecate :a, :b, :c => :e, :d => "you now need to do something extra for this one"
 
+  def f=(v); end
+  deprecate :f=
+
   module B
     C = 1
   end
@@ -32,7 +35,7 @@ class Deprecatee
 end
 
 
-class DeprecationTest < Test::Unit::TestCase
+class DeprecationTest < ActiveSupport::TestCase
   def setup
     # Track the last warning.
     @old_behavior = ActiveSupport::Deprecation.behavior
@@ -133,6 +136,7 @@ class DeprecationTest < Test::Unit::TestCase
   def test_deprecation_without_explanation
     assert_deprecated { @dtc.a }
     assert_deprecated { @dtc.b }
+    assert_deprecated { @dtc.f = :foo }
   end
 
   def test_deprecation_with_alternate_method
@@ -143,19 +147,21 @@ class DeprecationTest < Test::Unit::TestCase
     assert_deprecated(/you now need to do something extra for this one/) { @dtc.d }
   end
 
-  def test_assertion_failed_error_doesnt_spout_deprecation_warnings
-    error_class = Class.new(StandardError) do
-      def message
-        ActiveSupport::Deprecation.warn 'warning in error message'
-        super
+  unless defined?(::MiniTest)
+    def test_assertion_failed_error_doesnt_spout_deprecation_warnings
+      error_class = Class.new(StandardError) do
+        def message
+          ActiveSupport::Deprecation.warn 'warning in error message'
+          super
+        end
       end
+
+      raise error_class.new('hmm')
+
+    rescue => e
+      error = Test::Unit::Error.new('testing ur doodz', e)
+      assert_not_deprecated { error.message }
+      assert_nil @last_message
     end
-
-    raise error_class.new('hmm')
-
-  rescue => e
-    error = Test::Unit::Error.new('testing ur doodz', e)
-    assert_not_deprecated { error.message }
-    assert_nil @last_message
   end
 end

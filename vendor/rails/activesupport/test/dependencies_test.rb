@@ -43,7 +43,7 @@ class DependenciesTest < Test::Unit::TestCase
   end
 
   def test_missing_dependency_raises_missing_source_file
-    assert_raises(MissingSourceFile) { require_dependency("missing_service") }
+    assert_raise(MissingSourceFile) { require_dependency("missing_service") }
   end
 
   def test_missing_association_raises_nothing
@@ -136,52 +136,52 @@ class DependenciesTest < Test::Unit::TestCase
 
   def test_non_existing_const_raises_name_error
     with_loading 'autoloading_fixtures' do
-      assert_raises(NameError) { DoesNotExist }
-      assert_raises(NameError) { NoModule::DoesNotExist }
-      assert_raises(NameError) { A::DoesNotExist }
-      assert_raises(NameError) { A::B::DoesNotExist }
+      assert_raise(NameError) { DoesNotExist }
+      assert_raise(NameError) { NoModule::DoesNotExist }
+      assert_raise(NameError) { A::DoesNotExist }
+      assert_raise(NameError) { A::B::DoesNotExist }
     end
   end
 
   def test_directories_manifest_as_modules_unless_const_defined
     with_loading 'autoloading_fixtures' do
       assert_kind_of Module, ModuleFolder
-      Object.send! :remove_const, :ModuleFolder
+      Object.__send__ :remove_const, :ModuleFolder
     end
   end
 
   def test_module_with_nested_class
     with_loading 'autoloading_fixtures' do
       assert_kind_of Class, ModuleFolder::NestedClass
-      Object.send! :remove_const, :ModuleFolder
+      Object.__send__ :remove_const, :ModuleFolder
     end
   end
 
   def test_module_with_nested_inline_class
     with_loading 'autoloading_fixtures' do
       assert_kind_of Class, ModuleFolder::InlineClass
-      Object.send! :remove_const, :ModuleFolder
+      Object.__send__ :remove_const, :ModuleFolder
     end
   end
 
   def test_directories_may_manifest_as_nested_classes
     with_loading 'autoloading_fixtures' do
       assert_kind_of Class, ClassFolder
-      Object.send! :remove_const, :ClassFolder
+      Object.__send__ :remove_const, :ClassFolder
     end
   end
 
   def test_class_with_nested_class
     with_loading 'autoloading_fixtures' do
       assert_kind_of Class, ClassFolder::NestedClass
-      Object.send! :remove_const, :ClassFolder
+      Object.__send__ :remove_const, :ClassFolder
     end
   end
 
   def test_class_with_nested_inline_class
     with_loading 'autoloading_fixtures' do
       assert_kind_of Class, ClassFolder::InlineClass
-      Object.send! :remove_const, :ClassFolder
+      Object.__send__ :remove_const, :ClassFolder
     end
   end
 
@@ -190,7 +190,7 @@ class DependenciesTest < Test::Unit::TestCase
       assert_kind_of Class, ClassFolder::ClassFolderSubclass
       assert_kind_of Class, ClassFolder
       assert_equal 'indeed', ClassFolder::ClassFolderSubclass::ConstantInClassFolder
-      Object.send! :remove_const, :ClassFolder
+      Object.__send__ :remove_const, :ClassFolder
     end
   end
 
@@ -199,16 +199,16 @@ class DependenciesTest < Test::Unit::TestCase
       sibling = ModuleFolder::NestedClass.class_eval "NestedSibling"
       assert defined?(ModuleFolder::NestedSibling)
       assert_equal ModuleFolder::NestedSibling, sibling
-      Object.send! :remove_const, :ModuleFolder
+      Object.__send__ :remove_const, :ModuleFolder
     end
   end
 
   def failing_test_access_thru_and_upwards_fails
     with_loading 'autoloading_fixtures' do
       assert ! defined?(ModuleFolder)
-      assert_raises(NameError) { ModuleFolder::Object }
-      assert_raises(NameError) { ModuleFolder::NestedClass::Object }
-      Object.send! :remove_const, :ModuleFolder
+      assert_raise(NameError) { ModuleFolder::Object }
+      assert_raise(NameError) { ModuleFolder::NestedClass::Object }
+      Object.__send__ :remove_const, :ModuleFolder
     end
   end
 
@@ -279,7 +279,6 @@ class DependenciesTest < Test::Unit::TestCase
     assert ActiveSupport::Dependencies.qualified_const_defined?("Object")
     assert ActiveSupport::Dependencies.qualified_const_defined?("::Object")
     assert ActiveSupport::Dependencies.qualified_const_defined?("::Object::Kernel")
-    assert ActiveSupport::Dependencies.qualified_const_defined?("::Object::Dependencies")
     assert ActiveSupport::Dependencies.qualified_const_defined?("::Test::Unit::TestCase")
   end
 
@@ -383,7 +382,7 @@ class DependenciesTest < Test::Unit::TestCase
     with_loading 'autoloading_fixtures' do
       require_dependency '././counting_loader'
       assert_equal 1, $counting_loaded_times
-      assert_raises(ArgumentError) { ActiveSupport::Dependencies.load_missing_constant Object, :CountingLoader }
+      assert_raise(ArgumentError) { ActiveSupport::Dependencies.load_missing_constant Object, :CountingLoader }
       assert_equal 1, $counting_loaded_times
     end
   end
@@ -422,7 +421,7 @@ class DependenciesTest < Test::Unit::TestCase
 
   def test_nested_load_error_isnt_rescued
     with_loading 'dependencies' do
-      assert_raises(MissingSourceFile) do
+      assert_raise(MissingSourceFile) do
         RequiresNonexistent1
       end
     end
@@ -495,7 +494,7 @@ class DependenciesTest < Test::Unit::TestCase
   def test_unloadable_should_fail_with_anonymous_modules
     with_loading 'autoloading_fixtures' do
       m = Module.new
-      assert_raises(ArgumentError) { m.unloadable }
+      assert_raise(ArgumentError) { m.unloadable }
     end
   end
 
@@ -585,7 +584,7 @@ class DependenciesTest < Test::Unit::TestCase
   end
 
   def test_new_constants_in_with_illegal_module_name_raises_correct_error
-    assert_raises(NameError) do
+    assert_raise(NameError) do
       ActiveSupport::Dependencies.new_constants_in("Illegal-Name") {}
     end
   end
@@ -695,17 +694,17 @@ class DependenciesTest < Test::Unit::TestCase
     with_loading 'autoloading_fixtures' do
       ActiveSupport::Dependencies.mechanism = :require
       2.times do
-        assert_raise(NameError) {"RaisesNameError".constantize}
+        assert_raise(NameError) { assert_equal 123, ::RaisesNameError::FooBarBaz }
       end
     end
   end
 
   def test_autoload_doesnt_shadow_name_error
     with_loading 'autoloading_fixtures' do
-      assert !defined?(::RaisesNameError), "::RaisesNameError is defined but it hasn't been referenced yet!"
+      Object.send(:remove_const, :RaisesNameError) if defined?(::RaisesNameError)
       2.times do
         begin
-          ::RaisesNameError.object_id
+          ::RaisesNameError::FooBarBaz.object_id
           flunk 'should have raised NameError when autoloaded file referenced FooBarBaz'
         rescue NameError => e
           assert_equal 'uninitialized constant RaisesNameError::FooBarBaz', e.message
@@ -713,9 +712,9 @@ class DependenciesTest < Test::Unit::TestCase
         assert !defined?(::RaisesNameError), "::RaisesNameError is defined but it should have failed!"
       end
 
-      assert !defined?(RaisesNameError)
+      assert !defined?(::RaisesNameError)
       2.times do
-        assert_raise(NameError) { RaisesNameError }
+        assert_raise(NameError) { ::RaisesNameError }
         assert !defined?(::RaisesNameError), "::RaisesNameError is defined but it should have failed!"
       end
     end
@@ -761,5 +760,17 @@ class DependenciesTest < Test::Unit::TestCase
     end
   ensure
     ActiveSupport::Dependencies.load_once_paths = []
+  end
+
+  def test_hook_called_multiple_times
+    assert_nothing_raised { ActiveSupport::Dependencies.hook! }
+  end
+
+  def test_unhook
+    ActiveSupport::Dependencies.unhook!
+    assert !Module.new.respond_to?(:const_missing_without_dependencies)
+    assert !Module.new.respond_to?(:load_without_new_constant_marking)
+  ensure
+    ActiveSupport::Dependencies.hook!
   end
 end

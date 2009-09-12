@@ -4,7 +4,7 @@ module ActiveModel
       # Validates whether the value of the specified attribute is available in a particular enumerable object.
       #
       #   class Person < ActiveRecord::Base
-      #     validates_inclusion_of :gender, :in => %w( m f ), :message => "woah! what are you then!??!!"
+      #     validates_inclusion_of :gender, :in => %w( m f )
       #     validates_inclusion_of :age, :in => 0..99
       #     validates_inclusion_of :format, :in => %w( jpg gif png ), :message => "extension %s is not included in the list"
       #   end
@@ -26,7 +26,7 @@ module ActiveModel
 
         enum = configuration[:in] || configuration[:within]
 
-        raise(ArgumentError, "An object with the method include? is required must be supplied as the :in option of the configuration hash") unless enum.respond_to?("include?")
+        raise(ArgumentError, "An object with the method include? is required must be supplied as the :in option of the configuration hash") unless enum.respond_to?(:include?)
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
           record.errors.add(attr_name, configuration[:message] % value) unless enum.include?(value)

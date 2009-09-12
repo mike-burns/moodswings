@@ -43,7 +43,7 @@ class Test::Unit::TestCase
 
   def self.should_ensure_logged_in(meth = nil, action = nil, args = {})
     if meth.nil?
-      should_redirect_to 'root_url'
+      should_redirect_to('the home page') { root_url }
       should_set_the_flash_to /sign/i
     else
       logged_out do

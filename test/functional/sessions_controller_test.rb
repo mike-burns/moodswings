@@ -37,7 +37,7 @@ class SessionsControllerTest < ActionController::TestCase
         @user = User.find_by_openid_identity(@openid_identity)
       end
 
-      should_redirect_to 'edit_account_path'
+      should_redirect_to('the account edit page') { edit_account_url }
       should_authenticate_with_openid
       should_log_user_in
       should_change 'User.count', :by => 1
@@ -60,7 +60,7 @@ class SessionsControllerTest < ActionController::TestCase
         @user = User.find_by_openid_identity(@openid_identity)
       end
 
-      should_redirect_to 'user_path(@user)'
+      should_redirect_to("the user's home page") { user_url(@user) }
       should_authenticate_with_openid
       should_log_user_in
     end
@@ -87,7 +87,7 @@ class SessionsControllerTest < ActionController::TestCase
       end
 
       should_set_the_flash_to 'no good'
-      should_redirect_to 'root_url'
+      should_redirect_to('the home page') { root_url }
       should_authenticate_with_openid
       should_log_user_out
     end
@@ -99,7 +99,7 @@ class SessionsControllerTest < ActionController::TestCase
       delete :destroy
     end
     
-    should_redirect_to 'root_url'
+    should_redirect_to('the home page') { root_url }
     should_log_user_out
   end
 end

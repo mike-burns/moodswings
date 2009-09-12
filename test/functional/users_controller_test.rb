@@ -14,8 +14,8 @@ class UsersControllerTest < ActionController::TestCase
           get :show, :id => @the_user.to_param
         end
 
-        should_assign_to :user, :equals => '@the_user'
-        should_assign_to :moods, :equals => '@the_user.moods.first(10)'
+        should_assign_to(:user) { @the_user }
+        should_assign_to(:moods) { @the_user.moods.first(10) }
 
         should "show some moods" do
           @the_user.moods.first(10).each do |mood|

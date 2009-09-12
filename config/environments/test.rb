@@ -21,9 +21,41 @@ config.action_controller.allow_forgery_protection    = false
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
 
-HOST = "localhost"
+config.gem 'thoughtbot-factory_girl', 
+           :lib => 'factory_girl', 
+           :source => 'http://gems.github.com', 
+           :version => '>= 1.2.2'
+config.gem 'thoughtbot-shoulda', 
+           :lib => 'shoulda', 
+           :source => 'http://gems.github.com', 
+           :version => '>= 2.10.2'
+config.gem 'jtrupiano-timecop',
+           :version => '0.2.1',
+           :source => 'http://gems.github.com',
+           :lib => 'timecop'
+config.gem 'fakeweb',
+           :lib     => 'fakeweb',
+           :version => '>= 1.2.5'
 
-require 'quietbacktrace'
+# Webrat and dependencies
+# NOTE: don't vendor nokogiri - it's a binary Gem
+config.gem 'nokogiri',
+           :version => '1.3.3',
+           :lib     => false
+config.gem 'webrat',
+           :version => '0.4.4'
+
+# At the bottom due to a loading bug in Rails
+config.gem 'jferris-mocha', 
+           :version => '0.9.5.0.1241126838',
+           :source  => 'http://gems.github.com', 
+           :lib     => 'mocha'
+
+HOST = 'localhost'
+
 require 'factory_girl'
-require 'redgreen'
-require 'mocha'
+begin require 'redgreen'; rescue LoadError; end
+
+config.after_initialize do
+  Timecop.travel(Time.now)
+end

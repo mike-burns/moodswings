@@ -33,47 +33,31 @@ module GitCommands
   def self.diff_production
     puts run("git diff origin/staging origin/production")
   end
- 
-  def self.push_staging(branch)
-    raise "Branch must not be blank" if branch.blank?
-    raise "origin/staging branch does not exist" unless remote_branch_exists?("origin/staging")
+
+  def self.push(src_branch, dst_branch)
+    raise "origin/#{dst_branch} branch does not exist" unless remote_branch_exists?("origin/#{dst_branch}")
     ensure_clean_working_directory!
     begin
       run "git fetch"
-      run "git branch -f staging origin/staging"
-      run "git checkout staging"
-      run "git pull . #{branch}"
-      run "git push origin staging"
+      run "git push -f origin #{src_branch}:#{dst_branch}"
     rescue
-      puts "Creating staging tag failed."
+      puts "Pushing #{src_branch} to origin/#{dst_branch} failed."
       raise
-    ensure
-      run "git checkout master"
-      run "git branch -D staging"
     end
+  end
+ 
+  def self.push_staging
+    push(current_branch, "staging")
   end
  
   def self.push_production
-    raise "origin/production branch does not exist" unless remote_branch_exists?("origin/production")
-    ensure_clean_working_directory!
-    begin
-      run "git fetch"
-      run "git branch -f production origin/production"
-      run "git checkout production"
-      run "git pull origin staging"
-      run "git push origin production"
-    rescue
-      puts "Creating production tag failed."
-      raise
-    ensure
-      run "git checkout master"
-      run "git branch -D production"
-    end
+    push("origin/staging", "production")
   end
  
   def self.branch_production(branch)
-    raise "Branch must not be blank" if branch.blank?
+    raise "You must specify a branch name." if branch.blank?
     ensure_clean_working_directory!
+    run "git fetch"
     run "git branch -f #{branch} origin/production"
     run "git checkout #{branch}"
   end
@@ -86,14 +70,12 @@ end
  
 namespace :git do
   namespace :push do
-    desc "Merge a branch into the origin/staging branch."
+    desc "Reset origin's staging branch to be the current branch."
     task :staging do
-      branch = ENV['BRANCH'].blank? ? GitCommands.current_branch : ENV['BRANCH']
-      puts "Tagging #{branch} as origin/staging"
-      GitCommands.push_staging(branch)
+      GitCommands.push_staging
     end
  
-    desc "Merge the staging branch into origin/production for launch."
+    desc "Reset origin's production branch to origin's staging branch."
     task :production do
       GitCommands.push_production
     end
@@ -121,8 +103,6 @@ namespace :git do
   namespace :branch do
     desc "Branch origin/production into BRANCH locally."
     task :production do
-      branch = ENV['BRANCH'].blank? ? GitCommands.current_branch : ENV['BRANCH']
-      puts "Branching origin/production into #{branch}"
       GitCommands.branch_production(branch)
     end
   end

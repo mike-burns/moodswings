@@ -2,7 +2,7 @@
 
 development:
   adapter: postgresql
-  database: <%= PROJECT_NAME %>_development
+  database: moodswings_development
   #username: mike
   #password: 
   #host: localhost
@@ -10,7 +10,7 @@ development:
   
 test:
   adapter: postgresql
-  database: <%= PROJECT_NAME %>_test
+  database: moodswings_test
   #username: mike
   #password: 
   #host: localhost
@@ -18,16 +18,16 @@ test:
   
 staging:
   adapter: postgresql
-  database: <%= PROJECT_NAME %>_staging
-  username: <%= PROJECT_NAME %>
+  database: moodswings_staging
+  username: moodswings_
   password: <%= File.read(PASSWORD_FILE).chomp if File.readable? PASSWORD_FILE %>
   host: localhost
   encoding: utf8
   
 production:
   adapter: postgresql
-  database: <%= PROJECT_NAME %>_production
-  username: <%= PROJECT_NAME %>
+  database: moodswings_production
+  username: moodswings_
   password: <%= File.read(PASSWORD_FILE).chomp if File.readable? PASSWORD_FILE %>
   host: localhost
   encoding: utf8

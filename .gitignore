@@ -7,3 +7,5 @@ public/system
 coverage/*
 *.sw*
 .rake_tasks
+*.swp
+!.keep

@@ -1,5 +1,10 @@
-This is Suspenders, the thoughtbot rails template. To create a new project, checkout this
-repository and run:
+This is Suspenders, the thoughtbot rails template.
+
+To create a new project, first checkout the repository:
+
+  git clone git://github.com/thoughtbot/suspenders.git
+
+Change into the new 'suspenders' directory and run:
 
   ./script/create_project projectname
 
@@ -10,45 +15,64 @@ repo.
 
 When making a change to a project that was created via this template, consider
 whether it's a change that should be made across all projects.  If so, then
-make the change in this template, and pull it into your project via:
+make the change in suspenders instead of your project.  Note: If you don't
+have commit access to suspenders, create a github ticket and we'll review your
+suggestion.
+
+Once that's committed, you can pull into your project to get all the changes 
+that have been made in suspenders since your last pull:
 
   git pull suspenders master
-  
+
 About Suspenders
 ----------------
 
 Suspenders was created for use at thoughtbot, inc. (http://thoughtbot.com) as a
-baseline application setup, with reasonable default plugins that the majority (if not all)
-of our applications used, as well as best-practice configuration options.
+baseline application setup, with reasonable default plugins that the majority
+(if not all) of our applications used, as well as best-practice configuration
+options.
 
-Suspenders currently includes Rails 2.1.1
+Suspenders currently includes a version of Rails from the 2.3 stable branch.
+You can determine the changeset with the vendor/rails/REVISION_xxxxx file.
 
-Gems (unpacked in vendor/gems):
--------------------------------
+Gems (unpacked in vendor/gems, unless they are compiled gems):
+--------------------------------------------------------------
 
-  will_paginate 2.3.4
-  RedCloth 3.0.4
+For record pagination:
+
+  will_paginate (2.3.11)
+
+For text formatting:
+
+  RedCloth (4.2.2, not unpacked, this is a compiled gem)
+
+Form builder:
+
+  Formtastic (0.2.1)
+
+File attachments:
+
+  Paperclip (2.3.0)
+
+Basic user auth:
+
+  Clearance (0.7.0 engine)
 
 For testing:
 
-  mocha 0.9.1
-  redgreen-1.2.2
-  factory_girl 1.1.3
-  shoulda 2.0.2
-  quietbacktrace 1.1.4
+  jferris-mocha (standard mocha plus test spies)
+  factory_girl (fixture replacement for test data)
+  shoulda (rails test helpers and context framework)
+  timecop (for time sensitive tests)
+  fakeweb (for blocking HTTP calls to third-party services)
 
 Plugins (in vendor/plugins):
 ----------------------------
 
   hoptoad_notifier
   limerick_rake
-  mile_marker
-  squirrel
+  validation_reflection (used by formtastic to find required fields)
 
-For testing:
-
-  helper_test
-    
 Initializers (in config/initializers)
 -------------------------------------
 
@@ -75,7 +99,8 @@ Rake Tasks
 Rake tasks are contained in the limerick_rake gem.
 
   bootstrap
-  Provides rake tasks for loading data into the database.  These are used for an initial application dataset needed for production.
+  Provides rake tasks for loading data into the database.  These are used for
+  an initial application dataset needed for production.
   
   capistrano
   Standard capistrano deployment tasks
@@ -85,23 +110,28 @@ Testing
 
 Testing is done utilizing Test::Unit, Shoulda, factory_girl, and mocha.
 
-factory_girl is a fixture replacement library, following the factory pattern.  Place your
-factories in test/factories.rb.  The fixture directory has been removed, as fixtures are not
-used.
+factory_girl is a fixture replacement library, following the factory pattern.
+Place your factories in test/factories.rb.  The fixture directory has been
+removed, as fixtures are not used.
 
-Shoulda is a pragmatic testing framework for TDD and BDD built on top of Test::Unit.  A number of additional
-testing macros are provided in test/shoulda_macros:
+Shoulda is a pragmatic testing framework for TDD and BDD built on top of
+Test::Unit.  A number of additional testing macros are provided in
+test/shoulda_macros:
 
   shoulda_have_form
   shoulda_paginate_collection
 
+Timecop is used to freeze the time for the entire test suite. It is frozen to
+the value of Time.now; that is, the time that the tests suite starts running.
+
 Deployment
 ----------
 
-Deployment is done using capistrano, and deploys to a mongrel cluster, running under Apache.
+Deployment is done using capistrano, and deploys to a mongrel cluster, running
+under Apache.
 
-Rake tasks are provided for managing git branches which the different environments pull from
-for deploy.
+Rake tasks are provided for managing git branches which the different
+environments pull from for deploy.
 
 To push the git master to git staging branch run:
 

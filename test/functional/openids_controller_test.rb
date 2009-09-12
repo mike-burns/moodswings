@@ -39,7 +39,7 @@ class OpenidsControllerTest < ActionController::TestCase
             @controller.expects(:verify_authenticity_token).never
           end
 
-          should_redirect_to 'edit_account_path'
+          should_redirect_to('the account edit page') { edit_account_url }
 
           should "set the User's openid_identity to the new_openid_identity" do
             assert_equal @openid_identity, @user.openid_identity
@@ -70,7 +70,7 @@ class OpenidsControllerTest < ActionController::TestCase
             @controller.expects(:verify_authenticity_token).never
           end
 
-          should_redirect_to 'edit_account_path'
+          should_redirect_to('the account edit page') { edit_account_url }
           should_set_the_flash_to /invalid/
           should_not_change '@user.openid_identity'
           should_not_change '@user.new_openid_identity'
@@ -90,7 +90,7 @@ class OpenidsControllerTest < ActionController::TestCase
         end
 
         should_set_the_flash_to 'no good'
-        should_redirect_to 'edit_account_path'
+        should_redirect_to('the account edit page') { edit_account_url }
         should_not_change '@user.openid_identity'
         should_not_change '@user.new_openid_identity'
       end
@@ -104,7 +104,7 @@ class OpenidsControllerTest < ActionController::TestCase
         end
 
         should_not_change '@user.openid_identity'
-        should_redirect_to 'openid_path'
+        should_redirect_to('the OpenID root') {openid_path}
 
         should "set the new_openid_identity" do
           assert_equal @openid_identity, @user.new_openid_identity
@@ -121,7 +121,7 @@ class OpenidsControllerTest < ActionController::TestCase
         end
 
         should_set_the_flash_to /invalid/
-        should_redirect_to 'edit_account_path'
+          should_redirect_to("the account edit page") { edit_account_url }
       end
     end
   end
