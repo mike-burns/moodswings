@@ -1,13 +1,17 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  context "stubbing out #generate_nickname" do
-    setup do
-      User.any_instance.expects(:downcase_nickname)
-      User.any_instance.expects(:generate_nickname)
-    end
+  context "a User" do
+    subject { Factory(:user) }
 
-    should_validate_presence_of :openid_identity, :nickname
+    should_have_db_column :new_openid_identity, :type => 'string'
+    should_validate_uniqueness_of :openid_identity, :nickname
+    should_have_many :moods
+    # People who subscribe to me
+    should_have_many :subscriptions
+    should_have_many :subscribers, :through => :subscriptions
+
+    should_validate_presence_of :openid_identity #, :nickname
 
     should_allow_values_for :openid_identity, 'http://me.example.com/'
     should_allow_values_for :nickname, '0m.i~k!e-b@u=r:n,s_0'
@@ -18,22 +22,9 @@ class UserTest < ActiveSupport::TestCase
     should_not_allow_values_for :nickname, 'm e', 'm&e', 'm%e',
       'm?e', 'm>e', 'm<e', 'm/e', 'm"e', 'm`e', 'm\e', 'm#e', 'm$e',
       'm^e', 'm*e', 'm(e', 'm)e', 'm[e', 'm]e', 'm{e', 'm}e', 'm|e',
-      'm;e', 'm\'e', 'Me'
+      'm;e', 'm\'e' #, 'Me'
     #should_not_allow_values_for :timezone, 'jklasd',
     #  :message => /is not included in the list/
-  end
-
-  context "a User" do
-    setup do
-      @user = Factory(:user)
-    end
-
-    should_have_db_column :new_openid_identity, :type => 'string'
-    should_validate_uniqueness_of :openid_identity, :nickname
-    should_have_many :moods
-    # People who subscribe to me
-    should_have_many :subscriptions
-    should_have_many :subscribers, :through => :subscriptions
   end
 
 
@@ -55,8 +46,6 @@ class UserTest < ActiveSupport::TestCase
     [:openid_identity, :nickname].each do |field|
       should "only give one error for blank #{field}" do
         user = Factory.build(:user, field => '')
-        user.expects(:downcase_nickname)
-        user.expects(:generate_nickname)
         user.valid?
         assert_kind_of String, user.errors[field]
       end
@@ -94,7 +83,7 @@ class UserTest < ActiveSupport::TestCase
           assert_equal @user, @result
         end
 
-        should_not_change 'User.count'
+        should_not_change('the user count') {User.count}
       end
     end
 
@@ -113,7 +102,7 @@ class UserTest < ActiveSupport::TestCase
           @result = User.openid_registration(@openid_identity, @registration)
         end
 
-        should_not_change 'User.count'
+        should_not_change('the user count') {User.count}
 
         context "should produce a user which" do
           setup do
@@ -144,7 +133,7 @@ class UserTest < ActiveSupport::TestCase
           @result = User.openid_registration(@openid_identity, @registration)
         end
 
-        should_not_change 'User.count'
+        should_not_change('the user count') {User.count}
 
         context "should produce a user which" do
           setup do
