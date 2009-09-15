@@ -2,9 +2,7 @@ require 'test_helper'
 
 class MoodTest < ActiveSupport::TestCase
   context "a Mood" do
-    setup do
-      @mood = Factory(:mood)
-    end
+    subject { Factory(:mood) }
 
     should_have_db_column :red, :type => 'integer'
     should_have_db_column :green, :type => 'integer'
