@@ -14,6 +14,8 @@ class User < ActiveRecord::Base
   before_validation_on_update :downcase_nickname
 
   has_many :moods
+  has_many :subscriptions
+  has_many :subscribers, :through => :subscriptions
 
   def self.openid_registration(openid_identity, registration)
     find_by_openid_identity(openid_identity) ||
@@ -21,6 +23,11 @@ class User < ActiveRecord::Base
           :nickname => registration['nickname'],
           :location => registration['postcode'],
           :timezone => registration['timezone'])
+  end
+
+  def subscribes_to?(a_user)
+    Subscription.exists?(:user_id => a_user.to_param,
+                         :subscriber_id => self.to_param)
   end
 
   private

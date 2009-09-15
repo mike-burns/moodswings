@@ -31,6 +31,9 @@ class UserTest < ActiveSupport::TestCase
     should_have_db_column :new_openid_identity, :type => 'string'
     should_validate_uniqueness_of :openid_identity, :nickname
     should_have_many :moods
+    # People who subscribe to me
+    should_have_many :subscriptions
+    should_have_many :subscribers, :through => :subscriptions
   end
 
 
@@ -166,5 +169,14 @@ class UserTest < ActiveSupport::TestCase
         end
       end
     end
+  end
+
+  should "produce true if a user subscribes to this user" do
+    subscription = Factory(:subscription)
+    assert subscription.subscriber.subscribes_to?(subscription.user)
+  end
+
+  should "produce false if a user does not subscribe to this user" do
+    assert ! Factory(:user).subscribes_to?(Factory(:user))
   end
 end
