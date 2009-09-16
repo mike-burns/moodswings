@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
-  helper :all
+  helper_method :logged_in?, :current_user
   protect_from_forgery
-  include ApplicationHelper
   include HoptoadNotifier::Catcher
 
   protected
