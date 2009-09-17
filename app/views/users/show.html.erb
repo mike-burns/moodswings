@@ -1,9 +1,13 @@
 <% if logged_in? %>
-  <% form_for @user.moods.build do |f| %>
-    <p><%= image_submit_tag 'colorwheel.jpg' %></p>
-  <% end %>
-
-  <% if current_user.subscribes_to?(@user) %>
+	<div id="picker" style="padding: 100px;">
+		<% form_for @user.moods.build do |f| %>
+			<%= f.hidden_field :red %>
+			<%= f.hidden_field :green %>
+			<%= f.hidden_field :blue %>
+	    <%= image_submit_tag 'hexagon.jpg', :id => "hexagon" %>
+	  <% end %>
+	</div>
+	<% if current_user.subscribes_to?(@user) %>
     <% form_for [@user, current_user.subscription_for(@user)] do |f| %>
       <p><%= submit_tag 'Unsubscribe' %></p>
     <% end %>
