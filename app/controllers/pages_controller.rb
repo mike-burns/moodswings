@@ -4,6 +4,13 @@ class PagesController < ApplicationController
   end 
 
   def home
-    render :layout => false
+    logged_in? ?
+      redirect_to( home_path ) : render( :layout => false )
   end 
+  
+  def dashboard
+    return redirect_to :action => :home unless logged_in?
+    
+    @theme = "sunset"
+  end
 end

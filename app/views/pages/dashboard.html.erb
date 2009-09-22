@@ -1,0 +1,14 @@
+<div id="picker">
+	<% form_for current_user.moods.build do |f| %>
+		<%= f.hidden_field :red %>
+		<%= f.hidden_field :green %>
+		<%= f.hidden_field :blue %>
+    <%= image_submit_tag 'hexagon.jpg', :id => "hexagon" %>
+  <% end %>
+</div>
+
+<ul>
+  <% current_user.subscribers.each do |subscriber| %>
+    <li><%= link_to subscriber.name, subscriber %></li>
+  <% end %>
+</ul>
