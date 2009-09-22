@@ -7,8 +7,16 @@
     <%= stylesheet_link_tag 'screen', :media => 'all', :cache => true %>
   </head>
   <body class="<%= body_class %>">
+    <div id="header">
+      <%= render :partial => 'layouts/header' %>
+    </div>
     <%= render :partial => 'shared/flashes' -%>
-    <%= yield %>
+    <div id="content">
+      <%= yield %>
+    </div>
+    <div id="footer">
+      <%= render :partial => 'layouts/footer' %>
+    </div>
     <%= render :partial => 'shared/javascript' %>
   </body>
 </html>
